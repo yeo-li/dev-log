@@ -1,6 +1,8 @@
 package com.github.yeoli.devlog.domain.memo.service
 
 import com.github.yeoli.devlog.domain.memo.domain.Memo
+import com.ibm.icu.impl.IllegalIcuArgumentException
+import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.fileEditor.FileEditorManager
@@ -10,8 +12,14 @@ import java.awt.Point
 
 class MemoService {
 
+    private val logger = Logger.getInstance(MemoService::class.java)
+
     fun createMemo(content: String, project: Project): Memo? {
-        val editor = getActiveEditor(project) ?: return null
+        val editor = getActiveEditor(project)
+        if (editor == null) {
+            logger.warn("[createMemo] editor가 null이므로 null을 반환합니다.")
+            return null
+        }
 
         val selectionModel = editor.selectionModel
         val document = editor.document
@@ -32,22 +40,35 @@ class MemoService {
 
         val commitHash = getCurrentCommitHash(project)
 
-        return Memo(
-            content = content,
-            commitHash = commitHash,
-            filePath = filePath,
-            selectedCodeSnippet = selectedCodeSnippet,
-            selectionStart = selectionStart,
-            selectionEnd = selectionEnd,
-            visibleStart = visibleStartLine,
-            visibleEnd = visibleEndLine
-        )
+        if (content.isBlank()) {
+            logger.warn("[createMemo] content가 blanck 이므로 null을 반환합니다.")
+            return null
+        }
+
+        val memo: Memo
+        try {
+            memo = Memo(
+                content = content,
+                commitHash = commitHash,
+                filePath = filePath,
+                selectedCodeSnippet = selectedCodeSnippet,
+                selectionStart = selectionStart,
+                selectionEnd = selectionEnd,
+                visibleStart = visibleStartLine,
+                visibleEnd = visibleEndLine
+            )
+        } catch (e: IllegalIcuArgumentException) {
+            logger.warn("[createMemo] Memo 생성에 실패하여 null을 반환합니다.(사유: " + e.message + ")")
+            return null;
+        }
+
+        return memo
     }
 
     private fun getActiveEditor(project: Project): Editor? {
         return FileEditorManager.getInstance(project).selectedTextEditor
     }
-    
+
     private fun getCurrentCommitHash(project: Project): String? {
         val repoManager = GitRepositoryManager.getInstance(project)
         val repo = repoManager.repositories.firstOrNull() ?: return null
