@@ -1,5 +1,6 @@
 package com.github.yeoli.devlog.domain.memo.repository
 
+import com.github.yeoli.devlog.domain.memo.domain.Memo
 import com.intellij.openapi.components.PersistentStateComponent
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.State
@@ -23,7 +24,7 @@ class MemoRepository : PersistentStateComponent<MemoStorageState> {
         state.memos.add(memo)
     }
 
-    fun getAll(): List<MemoState> {
-        return state.memos
+    fun getAll(): List<Memo> {
+        return state.memos.map { it.toDomain() }
     }
 }
