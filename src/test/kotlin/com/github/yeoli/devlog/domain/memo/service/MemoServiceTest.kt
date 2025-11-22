@@ -14,6 +14,7 @@ import com.intellij.util.Function
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 import java.awt.Point
+import java.time.LocalDateTime
 import kotlin.test.assertTrue
 
 class MemoServiceTest : BasePlatformTestCase() {
@@ -240,5 +241,74 @@ class MemoServiceTest : BasePlatformTestCase() {
         assertTrue(result.isEmpty(), "예외 발생 시 빈 리스트를 반환해야 합니다.")
     }
 
+    // ========= 메모 삭제 기능 =========
+    fun `test 메모 삭제 기능 - 정상 삭제`() {
+        val now = java.time.LocalDateTime.now()
+        val memo1 = Memo(
+            id = 1L,
+            createdAt = now,
+            updatedAt = now,
+            content = "a",
+            commitHash = null,
+            filePath = "/path/to/file1",
+            selectedCodeSnippet = null,
+            selectionStart = null,
+            selectionEnd = null,
+            visibleStart = null,
+            visibleEnd = null
+        )
+        val memo2 = Memo(
+            id = 2L,
+            createdAt = now,
+            updatedAt = now,
+            content = "b",
+            commitHash = null,
+            filePath = "/path/to/file2",
+            selectedCodeSnippet = null,
+            selectionStart = null,
+            selectionEnd = null,
+            visibleStart = null,
+            visibleEnd = null
+        )
+        val memos = listOf(memo1, memo2)
+
+        MemoService(project).removeMemos(memos)
+
+        org.mockito.kotlin.verify(memoRepository)
+            .removeMemosById(listOf(1L, 2L))
+    }
+
+    fun `test 메모 삭제 기능 - 빈 리스트는 Repository를 호출하지 않음`() {
+        MemoService(project).removeMemos(emptyList())
+
+        org.mockito.kotlin.verify(memoRepository, org.mockito.kotlin.never())
+            .removeMemosById(org.mockito.kotlin.any())
+    }
+
+    fun `test 메모 삭제 기능 - Repository 예외 발생해도 서비스는 throw 하지 않음`() {
+        val now = LocalDateTime.now()
+        val memo = Memo(
+            id = 10L,
+            createdAt = now,
+            updatedAt = now,
+            content = "x",
+            commitHash = null,
+            filePath = "/path/to/file",
+            selectedCodeSnippet = null,
+            selectionStart = null,
+            selectionEnd = null,
+            visibleStart = null,
+            visibleEnd = null
+        )
+
+        whenever(
+            memoRepository.removeMemosById(listOf(10L))
+        ).thenThrow(RuntimeException("DB error"))
+
+        val result = runCatching {
+            MemoService(project).removeMemos(listOf(memo))
+        }
+        assertTrue(result.isSuccess, "예외가 발생하면 안 됩니다.")
+    }
 }
 
