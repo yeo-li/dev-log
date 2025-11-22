@@ -543,4 +543,24 @@ class MemoServiceTest : BasePlatformTestCase() {
         assertTrue(export.contains("3 ~ 8"))
     }
 
+    fun `test exportToTxt - 파일 생성 및 내용 저장`() {
+        // given
+        val service = MemoService(project)
+        val text = "Hello DevLog Export Test"
+
+        // IntelliJ 테스트용 임시 디렉토리 생성 (VirtualFile)
+        val exportDir = myFixture.tempDirFixture.findOrCreateDir("exports")
+
+        // when
+        val exported = service.exportToTxt(text, exportDir)
+
+        // then
+        assertNotNull(exported)
+        assertTrue(exported!!.exists())
+        assertTrue(exported.name.startsWith("devlog-${project.name}-"))
+
+        val content = String(exported.contentsToByteArray(), Charsets.UTF_8)
+        assertEquals(text, content)
+    }
+
 }
