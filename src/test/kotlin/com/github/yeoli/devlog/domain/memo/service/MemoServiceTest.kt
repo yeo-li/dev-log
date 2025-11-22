@@ -396,4 +396,22 @@ class MemoServiceTest : BasePlatformTestCase() {
         })
     }
 
+    // ========= 메모 추출 기능 =========
+
+    fun `test buildHeader - 프로젝트명과 시간 포함`() {
+        // given
+        val service = MemoService(project)
+
+        // when
+        val header = service.buildHeader()
+
+        // then
+        assertTrue(header.contains("========== DEV LOG =========="))
+        assertTrue(header.contains("💻 프로젝트 명: ${project.name}"))
+        assertTrue(header.contains("⏰ 추출 시간:"))
+        val regex = Regex("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}")
+        assertTrue(regex.containsMatchIn(header), "날짜 포맷이 잘못되었습니다.")
+        assertTrue(header.contains("---------------------------------------"))
+    }
+
 }
