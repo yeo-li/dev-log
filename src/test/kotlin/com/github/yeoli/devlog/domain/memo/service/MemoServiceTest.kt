@@ -547,8 +547,6 @@ class MemoServiceTest : BasePlatformTestCase() {
         // given
         val service = MemoService(project)
         val text = "Hello DevLog Export Test"
-
-        // IntelliJ 테스트용 임시 디렉토리 생성 (VirtualFile)
         val exportDir = myFixture.tempDirFixture.findOrCreateDir("exports")
 
         // when
