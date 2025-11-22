@@ -1,7 +1,9 @@
 package com.github.yeoli.devlog.domain.memo.service
 
 import com.github.yeoli.devlog.domain.memo.domain.Memo
+import com.github.yeoli.devlog.domain.memo.repository.MemoRepository
 import com.ibm.icu.impl.IllegalIcuArgumentException
+import com.intellij.openapi.components.Service
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.fileEditor.FileDocumentManager
@@ -10,11 +12,14 @@ import com.intellij.openapi.project.Project
 import git4idea.repo.GitRepositoryManager
 import java.awt.Point
 
-class MemoService {
+@Service(Service.Level.PROJECT)
+class MemoService(private val project: Project) {
+
+    private val memoRepository = project.getService(MemoRepository::class.java)
 
     private val logger = Logger.getInstance(MemoService::class.java)
 
-    fun createMemo(content: String, project: Project): Memo? {
+    fun createMemo(content: String): Memo? {
         val editor = getActiveEditor(project)
         if (editor == null) {
             logger.warn("[createMemo] editor가 null이므로 null을 반환합니다.")
@@ -73,5 +78,13 @@ class MemoService {
         val repoManager = GitRepositoryManager.getInstance(project)
         val repo = repoManager.repositories.firstOrNull() ?: return null
         return repo.currentRevision
+    }
+
+    fun saveMemo(memo: Memo) {
+        try {
+            memoRepository.save(memo.toState())
+        } catch (e: Exception) {
+            logger.warn("[saveMemo] 메모 저장 중 알 수 없는 에러가 발생했습니다. ${e.message}", e)
+        }
     }
 }
