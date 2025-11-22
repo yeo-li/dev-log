@@ -14,7 +14,7 @@ import java.awt.Point
 
 class MemoServiceTest : BasePlatformTestCase() {
 
-    fun test_메모_생성_성공() {
+    fun `test 메모 생성 성공`() {
         // given
         val psiFile = myFixture.configureByText(
             "SampleFile.kt",
@@ -41,7 +41,7 @@ class MemoServiceTest : BasePlatformTestCase() {
         ).line
 
         // when
-        val memo: Memo? = MemoService().createMemo(memoContent, project)
+        val memo: Memo? = MemoService(project).createMemo(memoContent)
         // then
         if (memo != null) {
             assertEquals(memoContent, memo.content)
@@ -58,7 +58,7 @@ class MemoServiceTest : BasePlatformTestCase() {
 
     }
 
-    fun test_메모_생성_선택없음() {
+    fun `test 메모 생성 선택없음`() {
         // given
         val psiFile = myFixture.configureByText(
             "SampleFile.kt",
@@ -84,7 +84,7 @@ class MemoServiceTest : BasePlatformTestCase() {
         ).line
 
         // when
-        val memo: Memo? = MemoService().createMemo(memoContent, project)
+        val memo: Memo? = MemoService(project).createMemo(memoContent)
         // then
         if (memo != null) {
             assertEquals(memoContent, memo.content)
@@ -100,7 +100,7 @@ class MemoServiceTest : BasePlatformTestCase() {
         }
     }
 
-    fun test_메모_생성_에디터없음_예외() {
+    fun `test 메모 생성 에디터 없음 예외`() {
         // given
         val psiFile = myFixture.configureByText(
             "SampleFile.kt",
@@ -113,11 +113,11 @@ class MemoServiceTest : BasePlatformTestCase() {
         assertNull("선택된 에디터가 없어야 합니다.", fileEditorManager.selectedTextEditor)
 
         // expect
-        val memo: Memo? = MemoService().createMemo("에디터 없음", project)
+        val memo: Memo? = MemoService(project).createMemo("에디터 없음")
         assertNull(memo);
     }
 
-    fun test_메모_생성_파일경로없음() {
+    fun `test 메모 생성 파일경로 없음`() {
         // given
         myFixture.configureByText(
             "SampleFile.kt",
@@ -149,7 +149,7 @@ class MemoServiceTest : BasePlatformTestCase() {
 
         try {
             // when
-            val memo: Memo? = MemoService().createMemo(memoContent, project)
+            val memo: Memo? = MemoService(project).createMemo(memoContent)
 
             // then
             if (memo != null) {
@@ -166,4 +166,5 @@ class MemoServiceTest : BasePlatformTestCase() {
             Disposer.dispose(mockDisposable)
         }
     }
+
 }
