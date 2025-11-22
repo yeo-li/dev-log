@@ -136,4 +136,20 @@ class MemoService(private val project: Project) {
             ---------------------------------------
         """.trimIndent()
     }
+
+    fun buildExportText(selectedMemos: List<Memo>): String {
+        val header = buildHeader()
+
+        if (selectedMemos.isEmpty()) {
+            return header + "\n(내보낼 메모가 없습니다.)"
+        }
+
+        val body = selectedMemos
+            .mapIndexed { index, memo ->
+                memo.buildMemoBlock(index + 1)
+            }
+            .joinToString(separator = "\n")
+
+        return header + "\n\n" + body
+    }
 }
