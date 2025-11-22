@@ -82,9 +82,19 @@ class MemoService(private val project: Project) {
 
     fun saveMemo(memo: Memo) {
         try {
-            memoRepository.save(memo.toState())
+            memoRepository.save(memo)
         } catch (e: Exception) {
             logger.warn("[saveMemo] 메모 저장 중 알 수 없는 에러가 발생했습니다. ${e.message}", e)
         }
+    }
+
+    fun getAllMemos(): List<Memo> {
+        try {
+            return memoRepository.getAll()
+        } catch (e: Exception) {
+            logger.warn("[getAllMemos] 메모 조회 중 알 수 없는 에러가 발생했습니다. ${e.message}", e)
+        }
+
+        return mutableListOf()
     }
 }
