@@ -3,14 +3,18 @@ package com.github.yeoli.devlog.domain.memo.service
 import com.github.yeoli.devlog.domain.memo.domain.Memo
 import com.github.yeoli.devlog.domain.memo.repository.MemoRepository
 import com.ibm.icu.impl.IllegalIcuArgumentException
+import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.VirtualFile
 import git4idea.repo.GitRepositoryManager
 import java.awt.Point
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 @Service(Service.Level.PROJECT)
 class MemoService(private val project: Project) {
@@ -118,5 +122,49 @@ class MemoService(private val project: Project) {
         } catch (e: Exception) {
             logger.warn("[updateMemo] 메모 수정 중 알 수 없는 에러가 발생했습니다. ${e.message}", e)
         }
+    }
+
+    fun buildHeader(): String {
+        val projectName = project.name
+        val now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+
+        return """
+            ========== DEV LOG ==========
+            
+            # 요약 정보
+            💻 프로젝트 명: $projectName
+            ⏰ 추출 시간: $now
+            
+            ---------------------------------------
+        """.trimIndent()
+    }
+
+    fun buildExportText(selectedMemos: List<Memo>): String {
+        val header = buildHeader()
+
+        if (selectedMemos.isEmpty()) {
+            return header + "\n(내보낼 메모가 없습니다.)"
+        }
+
+        val body = selectedMemos
+            .mapIndexed { index, memo ->
+                memo.buildMemoBlock(index + 1)
+            }
+            .joinToString(separator = "\n")
+
+        return header + "\n\n" + body
+    }
+
+    fun exportToTxt(text: String, directory: VirtualFile): VirtualFile? {
+        val date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss"))
+        val fileName = "devlog-${project.name}-$date.txt"
+
+        var file: VirtualFile? = null
+        WriteCommandAction.runWriteCommandAction(project) {
+            file = directory.createChildData(this, fileName)
+            file!!.setBinaryContent(text.toByteArray(Charsets.UTF_8))
+        }
+
+        return file
     }
 }
