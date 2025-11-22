@@ -97,4 +97,15 @@ class MemoService(private val project: Project) {
 
         return mutableListOf()
     }
+
+    fun removeMemos(memos: List<Memo>) {
+        if (memos.isEmpty()) return
+
+        try {
+            val ids: List<Long> = memos.map { it.id }
+            memoRepository.removeMemosById(ids)
+        } catch (e: Exception) {
+            logger.warn("[removeMemos] 메모 삭제 중 알 수 없는 에러가 발생했습니다. ${e.message}", e)
+        }
+    }
 }
