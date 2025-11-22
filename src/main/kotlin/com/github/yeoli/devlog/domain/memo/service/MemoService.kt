@@ -11,6 +11,8 @@ import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.project.Project
 import git4idea.repo.GitRepositoryManager
 import java.awt.Point
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 @Service(Service.Level.PROJECT)
 class MemoService(private val project: Project) {
@@ -118,5 +120,20 @@ class MemoService(private val project: Project) {
         } catch (e: Exception) {
             logger.warn("[updateMemo] 메모 수정 중 알 수 없는 에러가 발생했습니다. ${e.message}", e)
         }
+    }
+
+    fun buildHeader(): String {
+        val projectName = project.name
+        val now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+
+        return """
+            ========== DEV LOG ==========
+            
+            # 요약 정보
+            💻 프로젝트 명: $projectName
+            ⏰ 추출 시간: $now
+            
+            ---------------------------------------
+        """.trimIndent()
     }
 }
