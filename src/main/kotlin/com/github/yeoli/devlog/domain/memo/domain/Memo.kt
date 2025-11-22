@@ -75,4 +75,22 @@ class Memo(
             visibleStart = this.visibleStart,
             visibleEnd = this.visibleEnd
         )
+
+    fun update(
+        content: String = this.content
+    ): Memo {
+        return Memo(
+            id = this.id,
+            createdAt = this.createdAt,
+            updatedAt = LocalDateTime.now(),
+            content = content,
+            commitHash = this.commitHash,
+            filePath = this.filePath,
+            selectedCodeSnippet = this.selectedCodeSnippet,
+            selectionStart = this.selectionStart,
+            selectionEnd = this.selectionEnd,
+            visibleStart = this.visibleStart,
+            visibleEnd = this.visibleEnd
+        )
+    }
 }

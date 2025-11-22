@@ -108,4 +108,15 @@ class MemoService(private val project: Project) {
             logger.warn("[removeMemos] 메모 삭제 중 알 수 없는 에러가 발생했습니다. ${e.message}", e)
         }
     }
+
+    fun updateMemo(memoId: Long, newContent: String) {
+        try {
+            val memo: Memo = memoRepository.findMemoById(memoId) ?: return
+            val updated = memo.update(newContent)
+            memoRepository.removeMemoById(memoId)
+            memoRepository.save(updated)
+        } catch (e: Exception) {
+            logger.warn("[updateMemo] 메모 수정 중 알 수 없는 에러가 발생했습니다. ${e.message}", e)
+        }
+    }
 }

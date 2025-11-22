@@ -191,8 +191,8 @@ class MemoServiceTest : BasePlatformTestCase() {
         // given
         val memo1 = Memo(
             id = System.currentTimeMillis(),
-            createdAt = java.time.LocalDateTime.now(),
-            updatedAt = java.time.LocalDateTime.now(),
+            createdAt = LocalDateTime.now(),
+            updatedAt = LocalDateTime.now(),
             content = "메모1",
             commitHash = null,
             filePath = "/path/to/file1",
@@ -205,8 +205,8 @@ class MemoServiceTest : BasePlatformTestCase() {
 
         val memo2 = Memo(
             id = System.currentTimeMillis() + 1,
-            createdAt = java.time.LocalDateTime.now(),
-            updatedAt = java.time.LocalDateTime.now(),
+            createdAt = LocalDateTime.now(),
+            updatedAt = LocalDateTime.now(),
             content = "메모2",
             commitHash = null,
             filePath = "/path/to/file2",
@@ -243,7 +243,7 @@ class MemoServiceTest : BasePlatformTestCase() {
 
     // ========= 메모 삭제 기능 =========
     fun `test 메모 삭제 기능 - 정상 삭제`() {
-        val now = java.time.LocalDateTime.now()
+        val now = LocalDateTime.now()
         val memo1 = Memo(
             id = 1L,
             createdAt = now,
@@ -310,5 +310,90 @@ class MemoServiceTest : BasePlatformTestCase() {
         }
         assertTrue(result.isSuccess, "예외가 발생하면 안 됩니다.")
     }
-}
 
+    // ========= 메모 수정 기능 =========
+    fun `test 메모 수정 성공`() {
+        // given
+        val now = LocalDateTime.now()
+        val original = Memo(
+            id = 1L,
+            createdAt = now,
+            updatedAt = now,
+            content = "old",
+            commitHash = null,
+            filePath = "/path/file",
+            selectedCodeSnippet = "snippet",
+            selectionStart = 0,
+            selectionEnd = 5,
+            visibleStart = 1,
+            visibleEnd = 3
+        )
+        whenever(memoRepository.findMemoById(1L)).thenReturn(original)
+
+        val updated = original.update(content = "new")
+        whenever(memoRepository.save(updated)).thenAnswer {}
+
+        // when
+        MemoService(project).updateMemo(1L, "new")
+
+        // then
+        org.mockito.kotlin.verify(memoRepository).removeMemoById(1L)
+        org.mockito.kotlin.verify(memoRepository).save(org.mockito.kotlin.check {
+            assertEquals("new", it.content)
+        })
+    }
+
+    fun `test 조회 실패 시 아무 것도 하지 않음`() {
+        // given
+        whenever(memoRepository.findMemoById(999L)).thenReturn(null)
+
+        // when
+        MemoService(project).updateMemo(999L, "new")
+
+        // then
+        org.mockito.kotlin.verify(memoRepository, org.mockito.kotlin.never())
+            .removeMemoById(org.mockito.kotlin.any())
+        org.mockito.kotlin.verify(memoRepository, org.mockito.kotlin.never())
+            .save(org.mockito.kotlin.any())
+    }
+
+    fun `test udpate 적용된 필드 검증`() {
+        // given
+        val createdAt = LocalDateTime.now().minusDays(1)
+        val original = Memo(
+            id = 1L,
+            createdAt = createdAt,
+            updatedAt = createdAt,
+            content = "before",
+            commitHash = "abc",
+            filePath = "/path",
+            selectedCodeSnippet = "code",
+            selectionStart = 10,
+            selectionEnd = 20,
+            visibleStart = 5,
+            visibleEnd = 15
+        )
+        whenever(memoRepository.findMemoById(1L)).thenReturn(original)
+
+        val service = MemoService(project)
+
+        // when
+        service.updateMemo(1L, "after")
+
+        // then
+        org.mockito.kotlin.verify(memoRepository).save(org.mockito.kotlin.check { updated ->
+            assertEquals(1L, updated.id)
+            assertEquals("after", updated.content)
+
+            assertEquals(original.createdAt, updated.createdAt)
+            assertEquals(original.commitHash, updated.commitHash)
+            assertEquals(original.filePath, updated.filePath)
+            assertEquals(original.selectedCodeSnippet, updated.selectedCodeSnippet)
+            assertEquals(original.selectionStart, updated.selectionStart)
+            assertEquals(original.selectionEnd, updated.selectionEnd)
+            assertEquals(original.visibleStart, updated.visibleStart)
+            assertEquals(original.visibleEnd, updated.visibleEnd)
+        })
+    }
+
+}
