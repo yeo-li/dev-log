@@ -2,6 +2,7 @@ package com.github.yeoli.devlog.domain.memo.domain
 
 import com.github.yeoli.devlog.domain.memo.repository.MemoState
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import kotlin.test.*
 
 class MemoTest {
@@ -123,8 +124,8 @@ class MemoTest {
         val block = memo.buildMemoBlock(1)
 
         assertTrue(block.contains("# Memo 1"))
-        assertTrue(block.contains("📅 생성 시간 : $created"))
-        assertTrue(block.contains("📅 수정 시간 : $updated"))
+        assertTrue(block.contains("📅 생성 시간 : ${created.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))}"))
+        assertTrue(block.contains("📅 수정 시간 : ${updated.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))}"))
         assertTrue(block.contains("📌 Content"))
         assertTrue(block.contains("메모 내용입니다."))
         assertTrue(block.contains("Commit: abc123"))
@@ -155,8 +156,8 @@ class MemoTest {
         val block = memo.buildMemoBlock(2)
 
         assertTrue(block.contains("# Memo 2"))
-        assertTrue(block.contains("📅 생성 시간 : $created"))
-        assertTrue(block.contains("📅 수정 시간 : $updated"))
+        assertTrue(block.contains("📅 생성 시간 : ${created.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))}"))
+        assertTrue(block.contains("📅 수정 시간 : ${updated.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))}"))
         assertTrue(block.contains("전체 필드 테스트"))
         assertTrue(block.contains("Commit: ff12aa"))
         assertTrue(block.contains("File Path: /full/path/file.kt"))

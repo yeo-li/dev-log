@@ -2,6 +2,7 @@ package com.github.yeoli.devlog.domain.memo.domain
 
 import com.github.yeoli.devlog.domain.memo.repository.MemoState
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class Memo(
     val id: Long,
@@ -98,8 +99,8 @@ class Memo(
         return """
             
             # Memo $index
-            📅 생성 시간 : ${this.createdAt}
-            📅 수정 시간 : ${this.updatedAt}
+            📅 생성 시간 : ${this.createdAt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))}
+            📅 수정 시간 : ${this.updatedAt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))}
             
             📌 Content
             ${this.content}
