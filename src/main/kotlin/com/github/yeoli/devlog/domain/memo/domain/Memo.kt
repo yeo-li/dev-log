@@ -93,4 +93,25 @@ class Memo(
             visibleEnd = this.visibleEnd
         )
     }
+
+    fun buildMemoBlock(index: Int): String {
+        return """
+            
+            # Memo $index
+            📅 생성 시간 : ${this.createdAt}
+            📅 수정 시간 : ${this.updatedAt}
+            
+            📌 Content
+            ${this.content}
+            
+            🔗 Metadata
+            - Commit: ${this.commitHash ?: "N/A"}
+            - File Path: ${this.filePath ?: "N/A"}
+            - Visible Lines: ${this.visibleStart ?: "?"} ~ ${this.visibleEnd ?: "?"}
+            - Selected Code :
+            ${this.selectedCodeSnippet ?: "(no selected code)"}
+            
+            ---------------------------------------
+        """.trimIndent()
+    }
 }
