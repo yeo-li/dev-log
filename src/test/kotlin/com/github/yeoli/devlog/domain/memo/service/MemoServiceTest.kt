@@ -414,4 +414,133 @@ class MemoServiceTest : BasePlatformTestCase() {
         assertTrue(header.contains("---------------------------------------"))
     }
 
+    fun `test buildExportText - 빈 메모 리스트`() {
+        // given
+        val service = MemoService(project)
+
+        // when
+        val export = service.buildExportText(emptyList())
+
+        // then
+        assertTrue(export.contains("========== DEV LOG =========="))
+        assertTrue(export.contains("(내보낼 메모가 없습니다.)"))
+    }
+
+    fun `test buildExportText - 단일 메모 포함`() {
+        val now = LocalDateTime.of(2025, 1, 1, 10, 20, 30)
+
+        val memo = Memo(
+            id = 1L,
+            createdAt = now,
+            updatedAt = now,
+            content = "hello",
+            commitHash = "abc123",
+            filePath = "/path/file",
+            selectedCodeSnippet = "val a = 1",
+            selectionStart = 0,
+            selectionEnd = 10,
+            visibleStart = 3,
+            visibleEnd = 5
+        )
+
+        val service = MemoService(project)
+
+        // when
+        val export = service.buildExportText(listOf(memo))
+
+        // then: 헤더 포함
+        assertTrue(export.contains("========== DEV LOG =========="))
+        assertTrue(export.contains("💻 프로젝트 명: ${project.name}"))
+
+        // 메모 블록 정보 포함 확인
+        assertTrue(export.contains("# Memo 1"))
+        assertTrue(export.contains("📌 Content"))
+        assertTrue(export.contains("hello"))
+        assertTrue(export.contains("abc123"))
+        assertTrue(export.contains("/path/file"))
+        assertTrue(export.contains("val a = 1"))
+        assertTrue(export.contains("3 ~ 5"))
+    }
+
+    fun `test buildExportText - 여러 메모 순서대로 출력`() {
+        val now = LocalDateTime.of(2025, 1, 1, 9, 0, 0)
+
+        val memo1 = Memo(
+            id = 1L,
+            createdAt = now,
+            updatedAt = now,
+            content = "first",
+            commitHash = null,
+            filePath = "/f1",
+            selectedCodeSnippet = null,
+            selectionStart = 0,
+            selectionEnd = 0,
+            visibleStart = 1,
+            visibleEnd = 1
+        )
+
+        val memo2 = Memo(
+            id = 2L,
+            createdAt = now.plusHours(1),
+            updatedAt = now.plusHours(1),
+            content = "second",
+            commitHash = null,
+            filePath = "/f2",
+            selectedCodeSnippet = null,
+            selectionStart = 10,
+            selectionEnd = 10,
+            visibleStart = 2,
+            visibleEnd = 2
+        )
+
+        val service = MemoService(project)
+
+        // when
+        val export = service.buildExportText(listOf(memo1, memo2))
+
+        // then
+        assertTrue(export.contains("# Memo 1"))
+        assertTrue(export.contains("# Memo 2"))
+
+        // 순서 보장
+        val index1 = export.indexOf("# Memo 1")
+        val index2 = export.indexOf("# Memo 2")
+        assertTrue(index1 < index2, "Memo 1이 Memo 2보다 먼저 출력되어야 합니다.")
+    }
+
+    fun `test buildExportText - memoBlock 필드 검증`() {
+        val now = LocalDateTime.of(2025, 1, 1, 12, 34, 56)
+
+        val memo = Memo(
+            id = 10L,
+            createdAt = now,
+            updatedAt = now,
+            content = "내용입니다",
+            commitHash = null,
+            filePath = null,
+            selectedCodeSnippet = null,
+            selectionStart = 100,
+            selectionEnd = 200,
+            visibleStart = 3,
+            visibleEnd = 8
+        )
+
+        val service = MemoService(project)
+
+        // when
+        val export = service.buildExportText(listOf(memo))
+
+        // then
+        // 날짜 체크
+        assertTrue(export.contains("2025-01-01 12:34:56"))
+        // content
+        assertTrue(export.contains("내용입니다"))
+        // null 매핑
+        assertTrue(export.contains("- Commit: N/A"))
+        assertTrue(export.contains("- File Path: N/A"))
+        assertTrue(export.contains("(no selected code)"))
+        // visible range
+        assertTrue(export.contains("3 ~ 8"))
+    }
+
 }
