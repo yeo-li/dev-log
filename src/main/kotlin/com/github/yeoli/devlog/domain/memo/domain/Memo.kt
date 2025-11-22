@@ -1,8 +1,13 @@
 package com.github.yeoli.devlog.domain.memo.domain
 
+import com.github.yeoli.devlog.domain.memo.repository.MemoState
 import java.time.LocalDateTime
 
 class Memo(
+    val id: Long,
+    val createdAt: LocalDateTime,
+    val updatedAt: LocalDateTime,
+
     val content: String,
 
     val commitHash: String? = null,
@@ -15,13 +20,32 @@ class Memo(
     val visibleStart: Int? = null,
     val visibleEnd: Int? = null
 ) {
-    val id: Long = generateId()
-    val createdAt: LocalDateTime = LocalDateTime.now()
-    val updatedAt: LocalDateTime = LocalDateTime.now()
-
     init {
         validate()
     }
+
+    constructor(
+        content: String,
+        commitHash: String?,
+        filePath: String?,
+        selectedCodeSnippet: String?,
+        selectionStart: Int?,
+        selectionEnd: Int?,
+        visibleStart: Int?,
+        visibleEnd: Int?
+    ) : this(
+        id = System.currentTimeMillis(),
+        createdAt = LocalDateTime.now(),
+        updatedAt = LocalDateTime.now(),
+        content = content,
+        commitHash = commitHash,
+        filePath = filePath,
+        selectedCodeSnippet = selectedCodeSnippet,
+        selectionStart = selectionStart,
+        selectionEnd = selectionEnd,
+        visibleStart = visibleStart,
+        visibleEnd = visibleEnd
+    )
 
     private fun validate() {
         if (selectionStart != null && selectionEnd != null) {
@@ -37,7 +61,18 @@ class Memo(
         }
     }
 
-    private fun generateId(): Long {
-        return System.currentTimeMillis()
-    }
+    fun toState(): MemoState =
+        MemoState(
+            id = this.id,
+            createdAt = this.createdAt.toString(),
+            updatedAt = this.updatedAt.toString(),
+            content = this.content,
+            commitHash = this.commitHash,
+            filePath = this.filePath,
+            selectedCodeSnippet = this.selectedCodeSnippet,
+            selectionStart = this.selectionStart,
+            selectionEnd = this.selectionEnd,
+            visibleStart = this.visibleStart,
+            visibleEnd = this.visibleEnd
+        )
 }
