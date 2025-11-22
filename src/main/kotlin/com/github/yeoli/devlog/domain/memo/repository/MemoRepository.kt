@@ -27,4 +27,14 @@ class MemoRepository : PersistentStateComponent<MemoStorageState> {
     fun getAll(): List<Memo> {
         return state.memos.map { it.toDomain() }
     }
+
+    private fun removeMemoById(memoId: Long) {
+        state.memos.removeIf { it.id == memoId }
+    }
+
+    fun removeMemosById(memoIds: List<Long>) {
+        for (memoId in memoIds) {
+            removeMemoById(memoId)
+        }
+    }
 }
