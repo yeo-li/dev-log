@@ -24,11 +24,16 @@ class MemoRepository : PersistentStateComponent<MemoStorageState> {
         state.memos.add(memo.toState())
     }
 
+    fun findMemoById(memoId: Long): Memo? {
+        val memoState = state.memos.find { it.id == memoId }
+        return memoState?.toDomain()
+    }
+
     fun getAll(): List<Memo> {
         return state.memos.map { it.toDomain() }
     }
 
-    private fun removeMemoById(memoId: Long) {
+    fun removeMemoById(memoId: Long) {
         state.memos.removeIf { it.id == memoId }
     }
 
@@ -37,4 +42,5 @@ class MemoRepository : PersistentStateComponent<MemoStorageState> {
             removeMemoById(memoId)
         }
     }
+
 }
