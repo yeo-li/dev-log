@@ -3,12 +3,14 @@ package com.github.yeoli.devlog.domain.memo.service
 import com.github.yeoli.devlog.domain.memo.domain.Memo
 import com.github.yeoli.devlog.domain.memo.repository.MemoRepository
 import com.ibm.icu.impl.IllegalIcuArgumentException
+import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.VirtualFile
 import git4idea.repo.GitRepositoryManager
 import java.awt.Point
 import java.time.LocalDateTime
@@ -151,5 +153,18 @@ class MemoService(private val project: Project) {
             .joinToString(separator = "\n")
 
         return header + "\n\n" + body
+    }
+
+    fun exportToTxt(text: String, directory: VirtualFile): VirtualFile? {
+        val date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss"))
+        val fileName = "devlog-${project.name}-$date.txt"
+
+        var file: VirtualFile? = null
+        WriteCommandAction.runWriteCommandAction(project) {
+            file = directory.createChildData(this, fileName)
+            file!!.setBinaryContent(text.toByteArray(Charsets.UTF_8))
+        }
+
+        return file
     }
 }
