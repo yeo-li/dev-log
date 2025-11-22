@@ -20,8 +20,8 @@ class MemoRepository : PersistentStateComponent<MemoStorageState> {
         this.state = state
     }
 
-    fun save(memo: MemoState) {
-        state.memos.add(memo)
+    fun save(memo: Memo) {
+        state.memos.add(memo.toState())
     }
 
     fun getAll(): List<Memo> {

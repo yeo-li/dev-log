@@ -82,7 +82,7 @@ class MemoService(private val project: Project) {
 
     fun saveMemo(memo: Memo) {
         try {
-            memoRepository.save(memo.toState())
+            memoRepository.save(memo)
         } catch (e: Exception) {
             logger.warn("[saveMemo] 메모 저장 중 알 수 없는 에러가 발생했습니다. ${e.message}", e)
         }
