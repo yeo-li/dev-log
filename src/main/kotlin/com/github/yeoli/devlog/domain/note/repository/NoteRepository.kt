@@ -8,8 +8,8 @@ import com.intellij.openapi.components.Storage
 import java.time.LocalDateTime
 
 @State(
-    name = "DevLogMemoStorage",
-    storages = [Storage("devlog-memos.xml")]
+    name = "DevLogNoteStorage",
+    storages = [Storage("devlog-note.xml")]
 )
 @Service(Service.Level.PROJECT)
 class NoteRepository : PersistentStateComponent<NoteState> {
@@ -32,5 +32,9 @@ class NoteRepository : PersistentStateComponent<NoteState> {
             ).toState()
         }
         return state!!.toDomain()
+    }
+
+    fun updateNote(updatedNote: Note) {
+        this.state = updatedNote.toState()
     }
 }
