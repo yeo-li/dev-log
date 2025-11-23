@@ -2,7 +2,7 @@ package com.github.yeoli.devlog.domain.note.domain
 
 import java.time.LocalDateTime
 
-class Note constructor(
+class Note(
     val content: String,
     val updatedAt: LocalDateTime
 ) {
