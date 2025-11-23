@@ -1,6 +1,7 @@
 package com.github.yeoli.devlog.domain.note.domain
 
 import org.junit.jupiter.api.Assertions.*
+import java.time.LocalDateTime
 import kotlin.test.Test
 
 class NoteTest {
@@ -38,5 +39,45 @@ class NoteTest {
 
         assertEquals("", updated.content)
     }
-    
+
+    // =========== toState 테스트 ===========
+    @Test
+    fun `test toState - content와 updatedAt이 올바르게 변환된다`() {
+        // given
+        val now = LocalDateTime.of(2025, 1, 1, 12, 0)
+        val note = Note("Hello", now)
+
+        // when
+        val state = note.toState()
+
+        // then
+        assertEquals("Hello", state.content)
+        assertEquals(now.toString(), state.updatedAt)
+    }
+
+    @Test
+    fun `test toState - empty content도 정상 변환된다`() {
+        // given
+        val note = Note("")
+
+        // when
+        val state = note.toState()
+
+        // then
+        assertEquals("", state.content)
+        assertNotNull(state.updatedAt)
+    }
+
+    @Test
+    fun `test toState - updatedAt이 현재 시간이 아닐 수 있다`() {
+        // given
+        val customTime = LocalDateTime.of(2024, 12, 31, 23, 59)
+        val note = Note("Time test", customTime)
+
+        // when
+        val state = note.toState()
+
+        // then
+        assertEquals(customTime.toString(), state.updatedAt)
+    }
 }
