@@ -14,5 +14,14 @@ class NoteService(private val project: Project) {
     fun getNote(): Note {
         return noteRepository.getNote()
     }
+
+    fun updateNote(content: String) {
+        val note: Note = getNote()
+        if (note.content == content) return
+
+        val updatedNote = note.update(content)
+        
+        noteRepository.updateNote(updatedNote)
+    }
 }
 
