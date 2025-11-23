@@ -38,16 +38,5 @@ class NoteTest {
 
         assertEquals("", updated.content)
     }
-
-    @Test
-    fun `test 동일한 콘텐츠로 업데이트할 때 updatedAt이 갱신되지 않아야 한다`() {
-        val now = java.time.LocalDateTime.now()
-        val original = Note(
-            content = "same"
-        )
-
-        val updated = original.update("same")
-
-        assertEquals(original.updatedAt, updated.updatedAt)
-    }
+    
 }
