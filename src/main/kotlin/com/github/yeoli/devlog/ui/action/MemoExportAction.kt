@@ -1,6 +1,7 @@
-package com.github.yeoli.devlog.ui
+package com.github.yeoli.devlog.ui.action
 
 import com.github.yeoli.devlog.domain.memo.domain.Memo
+import com.github.yeoli.devlog.ui.MemoExportPipeline
 import com.intellij.icons.AllIcons
 import com.intellij.notification.NotificationGroupManager
 import com.intellij.notification.NotificationType

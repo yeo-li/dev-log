@@ -24,7 +24,7 @@ private val TITLE_MUTED_COLOR = JBColor(Color(0x88, 0x88, 0x88), Color(0xc0, 0xc
 private val DATE_LABEL_BORDER = JBColor(Color(0xe3, 0xe6, 0xed), Color(0x33, 0x34, 0x38))
 private val DATE_LABEL_TEXT = JBColor(Color(0x4d5160), Color(0xb8bcc9))
 
-class RetrospectTimelineView(
+class MemoListView(
     private val palette: UiPalette,
     private val interactions: Interactions
 ) {
