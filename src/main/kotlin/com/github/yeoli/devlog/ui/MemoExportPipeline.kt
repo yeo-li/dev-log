@@ -30,11 +30,11 @@ class MemoExportPipeline(
         }
         val content = header + "\n\n" + body
         val date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss"))
-        val defaultFileName = "devlog-${project.name}-$date.md"
+        val defaultFileName = "devlog-${project.name}-$date.txt"
 
         return Payload(
             content = content,
-            fileExtension = "md",
+            fileExtension = "txt",
             defaultFileName = defaultFileName
         )
     }
