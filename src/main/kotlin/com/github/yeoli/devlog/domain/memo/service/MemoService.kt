@@ -27,7 +27,18 @@ class MemoService(private val project: Project) {
         val editor = getActiveEditor(project)
         if (editor == null) {
             logger.warn("[createMemo] editor가 null이므로 null을 반환합니다.")
-            return null
+
+            return Memo(
+                content = content,
+                commitHash = null,
+                filePath = null,
+                selectedCodeSnippet = null,
+                fullCodeSnapshot = null,
+                selectionStart = null,
+                selectionEnd = null,
+                visibleStart = null,
+                visibleEnd = null
+            )
         }
 
         val selectionModel = editor.selectionModel

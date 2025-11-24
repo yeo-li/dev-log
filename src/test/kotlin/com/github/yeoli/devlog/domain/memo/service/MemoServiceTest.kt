@@ -134,7 +134,7 @@ class MemoServiceTest : BasePlatformTestCase() {
 
         // expect
         val memo: Memo? = MemoService(project).createMemo("에디터 없음")
-        assertNull(memo);
+        assertNotNull(memo)
     }
 
     fun `test 메모 생성 파일경로 없음`() {
