@@ -3,6 +3,10 @@
   <depends>com.intellij.modules.platform</depends>
   <depends>Git4Idea</depends>
   <extensions defaultExtensionNs="com.intellij">
+    <notificationGroup
+      displayType="BALLOON"
+      id="YeoliRetrospectNotifications"
+      isLogByDefault="true"/>
     <postStartupActivity implementation="com.github.yeoli.devlog.startup.MyProjectActivity"/>
     <toolWindow factoryClass="com.github.yeoli.devlog.toolWindow.MyToolWindowFactory"
       id="MyToolWindow"/>

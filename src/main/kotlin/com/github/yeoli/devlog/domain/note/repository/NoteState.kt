@@ -4,8 +4,8 @@ import com.github.yeoli.devlog.domain.note.domain.Note
 import java.time.LocalDateTime
 
 data class NoteState(
-    val content: String,
-    val updatedAt: String
+    var content: String = "",
+    var updatedAt: String = LocalDateTime.now().toString()
 ) {
 
     fun toDomain(): Note {
