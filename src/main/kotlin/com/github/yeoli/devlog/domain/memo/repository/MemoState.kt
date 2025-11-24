@@ -5,12 +5,13 @@ import java.time.LocalDateTime
 
 data class MemoState(
     var id: Long = 0L,
-    var createdAt: String,
-    var updatedAt: String,
+    var createdAt: String = LocalDateTime.now().toString(),
+    var updatedAt: String = LocalDateTime.now().toString(),
     var content: String = "",
     var commitHash: String? = null,
     var filePath: String? = null,
     var selectedCodeSnippet: String? = null,
+    var fullCodeSnapshot: String? = null,
     var selectionStart: Int? = null,
     var selectionEnd: Int? = null,
     var visibleStart: Int? = null,
@@ -25,6 +26,7 @@ data class MemoState(
             commitHash = commitHash,
             filePath = filePath,
             selectedCodeSnippet = selectedCodeSnippet,
+            fullCodeSnapshot = fullCodeSnapshot,
             selectionStart = selectionStart,
             selectionEnd = selectionEnd,
             visibleStart = visibleStart,

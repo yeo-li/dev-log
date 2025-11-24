@@ -19,7 +19,9 @@ class Memo(
     val selectionEnd: Int? = null,
 
     val visibleStart: Int? = null,
-    val visibleEnd: Int? = null
+    val visibleEnd: Int? = null,
+
+    val fullCodeSnapshot: String? = null
 ) {
     init {
         validate()
@@ -33,7 +35,8 @@ class Memo(
         selectionStart: Int?,
         selectionEnd: Int?,
         visibleStart: Int?,
-        visibleEnd: Int?
+        visibleEnd: Int?,
+        fullCodeSnapshot: String?
     ) : this(
         id = System.currentTimeMillis(),
         createdAt = LocalDateTime.now(),
@@ -45,7 +48,8 @@ class Memo(
         selectionStart = selectionStart,
         selectionEnd = selectionEnd,
         visibleStart = visibleStart,
-        visibleEnd = visibleEnd
+        visibleEnd = visibleEnd,
+        fullCodeSnapshot = fullCodeSnapshot
     )
 
     private fun validate() {
@@ -71,6 +75,7 @@ class Memo(
             commitHash = this.commitHash,
             filePath = this.filePath,
             selectedCodeSnippet = this.selectedCodeSnippet,
+            fullCodeSnapshot = this.fullCodeSnapshot,
             selectionStart = this.selectionStart,
             selectionEnd = this.selectionEnd,
             visibleStart = this.visibleStart,
@@ -88,6 +93,7 @@ class Memo(
             commitHash = this.commitHash,
             filePath = this.filePath,
             selectedCodeSnippet = this.selectedCodeSnippet,
+            fullCodeSnapshot = this.fullCodeSnapshot,
             selectionStart = this.selectionStart,
             selectionEnd = this.selectionEnd,
             visibleStart = this.visibleStart,
