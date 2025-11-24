@@ -1,15 +1,28 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
-    <id>com.github.yeoli.devlog</id>
-    <name>dev-log</name>
-    <vendor>yeo-li</vendor>
+  <depends>com.intellij.modules.platform</depends>
+  <depends>Git4Idea</depends>
+  <description>
+    <![CDATA[
+    DevLog는 코드 작성 중 떠오른 생각과 작업 맥락을 자동으로 기록해주는 메모 플러그인입니다.
+    선택된 코드, 파일 경로, Git 커밋 해시까지 함께 저장하여 작업 흐름을 충실히 복원할 수 있습니다.
+  ]]>
+  </description>
+  <extensions defaultExtensionNs="com.intellij">
+    <notificationGroup
+      displayType="BALLOON"
+      id="YeoliRetrospectNotifications"
+      isLogByDefault="true"/>
+    <postStartupActivity implementation="com.github.yeoli.devlog.startup.MyProjectActivity"/>
+    <toolWindow factoryClass="com.github.yeoli.devlog.toolWindow.MyToolWindowFactory"
+      id="DevLog"/>
+  </extensions>
+  <id>com.github.yeoli.devlog</id>
 
-    <depends>com.intellij.modules.platform</depends>
+  <name>DevLog</name>
 
-    <resource-bundle>messages.MyBundle</resource-bundle>
+  <resource-bundle>messages.MyBundle</resource-bundle>
 
-    <extensions defaultExtensionNs="com.intellij">
-        <toolWindow factoryClass="com.github.yeoli.devlog.toolWindow.MyToolWindowFactory" id="MyToolWindow"/>
-        <postStartupActivity implementation="com.github.yeoli.devlog.startup.MyProjectActivity" />
-    </extensions>
+  <vendor email="uio6699@naver.com" url="https://github.com/yeo-li">yeo-li</vendor>
+  <version>1.0.0</version>
 </idea-plugin>
