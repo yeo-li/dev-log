@@ -5,36 +5,27 @@ import com.intellij.openapi.components.PersistentStateComponent
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
-import java.time.LocalDateTime
 
 @State(
     name = "DevLogNoteStorage",
     storages = [Storage("devlog-note.xml")]
 )
 @Service(Service.Level.PROJECT)
-class NoteRepository : PersistentStateComponent<NoteState> {
+class NoteRepository : PersistentStateComponent<NoteStorageState> {
 
-    private var state: NoteState? = NoteState(
-        content = "",
-        updatedAt = LocalDateTime.now().toString()
-    )
+    private var state: NoteStorageState = NoteStorageState()
 
-    override fun getState(): NoteState? = state
+    override fun getState(): NoteStorageState? = state
 
-    override fun loadState(state: NoteState) {
+    override fun loadState(state: NoteStorageState) {
         this.state = state
     }
 
     fun getNote(): Note {
-        if (state == null) {
-            state = Note(
-                content = ""
-            ).toState()
-        }
-        return state!!.toDomain()
+        return state.noteState.toDomain()
     }
 
     fun updateNote(updatedNote: Note) {
-        this.state = updatedNote.toState()
+        this.state.noteState = updatedNote.toState()
     }
 }
