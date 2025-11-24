@@ -185,7 +185,7 @@ internal class DevLogPanel(
 
     // ---------- 데이터 동기화 ----------
     private fun refreshMemos() {
-        val memos = memoService.getAllMemos()
+        val memos = memoService.getAllMemosOrderByCreatedAt()
         totalRecordCount = memos.size
         timeline.render(memos)
         refreshToolbarActions()
@@ -280,7 +280,7 @@ internal class DevLogPanel(
         if (records.isEmpty()) return
         val ids = records.map { it.id }.toSet()
         if (ids.isEmpty()) return
-        val memos = memoService.getAllMemos().filter { ids.contains(it.id) }
+        val memos = memoService.getAllMemosOrderByCreatedAt().filter { ids.contains(it.id) }
         memoService.removeMemos(memos)
         notifyChange()
         selectedRecordIds.removeAll(ids)
@@ -290,8 +290,8 @@ internal class DevLogPanel(
     private fun getSelectedRecords(): List<Memo> {
         if (selectedRecordIds.isEmpty()) return emptyList()
         val selected = selectedRecordIds.toSet()
-        return memoService.getAllMemos()
-            .sortedBy { it.createdAt }.filter { it.id in selected }
+        return memoService.getAllMemosOrderByCreatedAt()
+            .filter { it.id in selected }
     }
 
     // ---------- 선택/툴바 상태 ----------
