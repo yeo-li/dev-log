@@ -34,6 +34,8 @@ class MemoService(private val project: Project) {
         val document = editor.document
 
         val selectedCodeSnippet = selectionModel.selectedText
+        val hasSelection = selectionModel.hasSelection()
+        val fullCodeSnapshot = if (hasSelection) document.text else null
 
         val selectionStart = selectionModel.selectionStart
         val selectionEnd = selectionModel.selectionEnd
@@ -61,6 +63,7 @@ class MemoService(private val project: Project) {
                 commitHash = commitHash,
                 filePath = filePath,
                 selectedCodeSnippet = selectedCodeSnippet,
+                fullCodeSnapshot = fullCodeSnapshot,
                 selectionStart = selectionStart,
                 selectionEnd = selectionEnd,
                 visibleStart = visibleStartLine,
@@ -166,5 +169,9 @@ class MemoService(private val project: Project) {
         }
 
         return file
+    }
+
+    fun findMemoById(memoId: Long): Memo? {
+        return memoRepository.findMemoById(memoId)
     }
 }
