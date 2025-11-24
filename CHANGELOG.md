@@ -3,5 +3,7 @@
 # dev-log Changelog
 
 ## [Unreleased]
+
 ### Added
-- Initial scaffold created from [IntelliJ Platform Plugin Template](https://github.com/JetBrains/intellij-platform-plugin-template)
+
+- 아직 변경 사항이 없습니다.

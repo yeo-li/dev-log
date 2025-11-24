@@ -15,11 +15,11 @@
       isLogByDefault="true"/>
     <postStartupActivity implementation="com.github.yeoli.devlog.startup.MyProjectActivity"/>
     <toolWindow factoryClass="com.github.yeoli.devlog.toolWindow.MyToolWindowFactory"
-      id="MyToolWindow"/>
+      id="DevLog"/>
   </extensions>
-
   <id>com.github.yeoli.devlog</id>
-  <name>dev-log</name>
+
+  <name>DevLog</name>
 
   <resource-bundle>messages.MyBundle</resource-bundle>
 
