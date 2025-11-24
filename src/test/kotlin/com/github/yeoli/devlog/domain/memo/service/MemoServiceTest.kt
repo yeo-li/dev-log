@@ -187,6 +187,52 @@ class MemoServiceTest : BasePlatformTestCase() {
     }
 
     // ========= 메모 조회 기능 =========
+    fun `test 메모 단건 조회 - 성공`() {
+        // given
+        val now = LocalDateTime.now()
+        val memo = Memo(
+            id = 100L,
+            createdAt = now,
+            updatedAt = now,
+            content = "hello",
+            commitHash = null,
+            filePath = "/path/file.kt",
+            selectedCodeSnippet = null,
+            fullCodeSnapshot = null,
+            selectionStart = 0,
+            selectionEnd = 0,
+            visibleStart = 0,
+            visibleEnd = 0
+        )
+
+        whenever(memoRepository.findMemoById(100L)).thenReturn(memo)
+
+        val service = MemoService(project)
+
+        // when
+        val result = service.findMemoById(100L)
+
+        // then
+        assertNotNull(result)
+        assertEquals(100L, result!!.id)
+        assertEquals("hello", result.content)
+        org.mockito.kotlin.verify(memoRepository).findMemoById(100L)
+    }
+
+    fun `test 메모 단건 조회 - 없음`() {
+        // given
+        whenever(memoRepository.findMemoById(999L)).thenReturn(null)
+
+        val service = MemoService(project)
+
+        // when
+        val result = service.findMemoById(999L)
+
+        // then
+        assertNull(result)
+        org.mockito.kotlin.verify(memoRepository).findMemoById(999L)
+    }
+
     fun `test 메모 전체 조회 기능 성공`() {
         // given
         val memo1 = Memo(
@@ -241,6 +287,7 @@ class MemoServiceTest : BasePlatformTestCase() {
         // then
         assertTrue(result.isEmpty(), "예외 발생 시 빈 리스트를 반환해야 합니다.")
     }
+
 
     // ========= 메모 삭제 기능 =========
     fun `test 메모 삭제 기능 - 정상 삭제`() {
