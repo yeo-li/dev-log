@@ -267,7 +267,7 @@ class MemoServiceTest : BasePlatformTestCase() {
         whenever(memoRepository.getAll()).thenReturn(listOf(memo1, memo2))
 
         // when
-        val result = MemoService(project).getAllMemos()
+        val result = MemoService(project).getAllMemosOrderByCreatedAt()
 
         // then
         assertEquals(2, result.size)
@@ -282,7 +282,7 @@ class MemoServiceTest : BasePlatformTestCase() {
         whenever(memoRepository.getAll()).thenThrow(RuntimeException("DB error"))
 
         // when
-        val result = MemoService(project).getAllMemos()
+        val result = MemoService(project).getAllMemosOrderByCreatedAt()
 
         // then
         assertTrue(result.isEmpty(), "예외 발생 시 빈 리스트를 반환해야 합니다.")

@@ -19,7 +19,7 @@ class MemoExportPipeline(
     fun buildPayload(recordsOverride: List<Memo>? = null): Payload {
         val memoService = project.getService(MemoService::class.java)
         val memos: List<Memo> = recordsOverride
-            ?: memoService.getAllMemos()
+            ?: memoService.getAllMemosOrderByCreatedAt()
 
         val header = memoService.buildHeader()
         val body = if (memos.isEmpty()) {
