@@ -35,8 +35,8 @@ dependencies {
     testImplementation(libs.opentest4j)
 
     testImplementation(kotlin("test"))
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.0")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.10.0")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:6.0.1")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:6.0.1")
     
     testImplementation("org.mockito:mockito-core:5.12.0")
     testImplementation("org.mockito.kotlin:mockito-kotlin:5.2.1")
